@@ -1,0 +1,31 @@
+body{
+    font-family: 'Arial', sans-serif;
+    background-color: #333;
+    color: #ffffff;
+    margin: 0;
+    padding: 20px;
+}
+#profileIMG{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+#view{
+    text-align: center;
+}
+#usrId{
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+.circular_image{
+    border-radius: 50%;
+    scale: 0.8;
+}
+#data{
+    width: 70%;
+    height: 80vh;
+    margin: 20px auto;
+    background-color: #868686;
+}

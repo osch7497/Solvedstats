@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <link href="/css/index.css" rel="stylesheet">
+    </head>
+    <body>
+        <div id="view">
+            <div id="profileIMG"></div>
+            <div id="profileId"></div>
+            <div id="tierGraph" style="width: 80%; height:20px; border-radius: 5px; overflow: hidden; margin:30px auto 0 auto;">
+                <div id="background" style="width: 100%; height: 100%; background-color: rgb(145, 145, 145);">
+                    <div id="bar" style="height: 100%; background-color: rgb(182, 97, 0);"></div>
+                </div>
+            </div>
+            <div id="SolvedData">
+                <div id="data">
+                    <table style="margin: 0 auto; width: 80%; border-collapse: collapse; text-align: center;">  
+                        <thead>
+                            <tr>
+                                <th>태그</th>
+                                <th>푼 문제 수</th>
+                            </tr>
+                        </thead>
+                        <tbody id="datatable">
+
+                        </tbody>
+                        </thead>
+                    </table>
+                </div>
+                
+            </div>
+        </div>
+    </body>
+    <script>
+        let tierset = [30,60,90,120,150,200,300,400,500,650,800,950,1100,1250,1400,1600,1750,1900,2000,2100,2200,2300,2400,2500,2600,2700,2800,2850,2950,3000];
+        let tierColor = ["rgb(182, 97, 0)", "silver", "gold", "rgb(0, 255, 170))", "rgb(0, 225, 255)", "rgb(255, 0, 119)", "rgb(194, 62, 255)"];
+        let profileImageView = document.getElementById("profileIMG")
+        let profileView = document.getElementById("view")
+        let dataView = document.getElementById("data")
+        let profileIdView = document.getElementById("profileId")
+        let tierGraph = document.getElementById("background");
+        let getTier = (rating) => {
+            rating = parseInt(rating);
+            let tierName = ["Bronze", "Silver", "Gold", "Platinum", "Diamond", "Ruby", "Master"];
+            let tierNum = ["V", "IV", "III", "II", "I"];
+            if(rating < 30)
+                return "Unrated"
+            for (let i = 0; i < tierset.length; i++) {
+                if (rating < tierset[i]) {
+                    return tierName[Math.floor(i/5)]+" "+tierNum[(i-1)%5];
+                }
+            }
+        }
+        let solvedproblemtype =[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+        let tags = ["implementation",
+                    "arithmetic",
+                    "math",
+                    "bruteforcing",
+                    "sorting",
+                    "greedy",
+                    "binary_search",
+                    "two_pointer",
+                    "prefix_sum",
+                    "dp",
+                    "graph_traversal",
+                    "bfs",
+                    "dfs",
+                    "stack",
+                    "queue"];                              
+        async function fetchSolvedCounts() {
+            const results = {};
+            const userHandle = "<%= UserID %>"; // 서버에서 전달된 사용자 ID
+
+            for (const tag of tags) {
+                const url = `/api/${userHandle}/${tag}`;
+                try {
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    results[tag] = data.count;
+
+                    // 결과 DOM에 출력
+                    document.getElementById("datatable").innerHTML += `<tr style="background-color: gray; font-size:30px;"><td>${tag}</td><td>${data.count}</td></tr>`;
+                } catch (error) {
+                    console.error(`Error fetching data for tag ${tag}:`, error);
+                    results[tag] = "Error";
+                }
+            }
+        }
+
+        fetchSolvedCounts();
+
+        fetch(`/api/user/<%= UserID %>`)
+            .then(response => response.json())
+            .then(data => {
+                var ImageUrl = data.profileImageUrl;                
+                profileImageView.innerHTML += `<img id="img" class="circular_image"src="${ImageUrl}" onerror=this.src="https://static.solved.ac/misc/360x360/default_profile.png"></img>`;
+                profileIdView.innerHTML += `<label id="usrId">${data.handle}</label>`;
+                console.log('Profile Image URL:', typeof(data.profileImageUrl));
+                let tierGraphBar = document.getElementById("bar");
+                tierGraphBar.style.width = `${data.rating/tierset[data.tier]*100}%`;
+                tierGraphBar.style.backgroundColor = tierColor[(data.tier-1)/5];
+                profileIdView.innerHTML += `<p id="user-tier">${getTier(data.rating)}</p>`;
+                document.getElementById("user-tier").style.color = getTier(data.rating).includes("Unrated") ? "gray" : tierGraphBar.style.backgroundColor = tierColor[Math.floor((data.tier-1)/5)];
+                tierGraphBar.innerHTML = `<span id="user-rating";style="color: white;">${data.rating}/${tierset[Math.floor(data.tier)]}</span>`;
+            })
+            .catch(error => {
+                console.error('Error fetching user data:', error);
+            });
+            
+    </script>
+</html>
