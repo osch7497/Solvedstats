@@ -15,7 +15,6 @@ body{
     text-align: center;
 }
 #usrId{
-    font-size: 24px;
     font-weight: bold;
     margin-top: 10px;
 }
@@ -24,7 +23,7 @@ body{
     scale: 0.8;
 }
 #data{
-    width: 70%;
+    width: 50%;
     height: 80vh;
     margin: 20px auto;
     background-color: #868686;

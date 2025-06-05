@@ -82,7 +82,7 @@
                     results[tag] = data.count;
 
                     // 결과 DOM에 출력
-                    document.getElementById("datatable").innerHTML += `<tr style="background-color: gray; font-size:30px;"><td>${tag}</td><td>${data.count}</td></tr>`;
+                    document.getElementById("datatable").innerHTML += `<tr style="background-color: gray; font-size:2vh;"><td>${tag}</td><td>${data.count}</td></tr>`;
                 } catch (error) {
                     console.error(`Error fetching data for tag ${tag}:`, error);
                     results[tag] = "Error";
